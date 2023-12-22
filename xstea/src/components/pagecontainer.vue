@@ -20,6 +20,7 @@ export default{
   <style lang="css" scoped>
 .pagecontainer {
     min-height: 100%;
+   /* background-color: #fbfafa; */
     /* box-sizing: border-box; */
   }
 .header {

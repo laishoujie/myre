@@ -4,7 +4,7 @@
       <el-aside width="200px">
         <h2 class="mb-2">&nbsp;学术晚茶</h2>
         <el-menu
-          active-text-color="#79bbff"
+        active-text-color="#79bbff"
           class="el-menu-vertical-demo"
           :default-active="$route.path"
           router
@@ -59,9 +59,6 @@ export default {
   setup() {
     const router=useRouter()
     const store =useStore()
-    // onMounted(()=>{
-    //   setToken()
-    // })
     function back () {
       store.commit('REMOVE')
       ElMessage.success("已退出登录")
@@ -69,14 +66,6 @@ export default {
       window.sessionStorage["token"]=''
       router.push("/login");
     };
-//     function setToken(){
-//       // 判断是否存在token，如果存在的话，则每个http header都加上token  
-//  if (store.state.token || window.localStorage.getItem('TOKEN')) {      
-//   config.headers.common['token'] = store.state.token || window.localStorage.getItem('TOKEN')      
-//   }
-
-    // };
-    
     return {
       back,
     };
@@ -86,11 +75,11 @@ export default {
 <style scoped>
 .container {
   height: 100vh;
-  background-color: #fcfcfc;
 }
 .el-menu {
+  background-color: #fbfbfb;
   height: 70vh;
-  border-top: 1px solid #e4e1e1;
+  border-top: 1px solid #dfe3e9;
   display: flex;
   flex-direction: column;
   justify-content: center;
@@ -100,13 +89,13 @@ export default {
   /* text-align: center; */
 }
 .mb-2 {
-  color: #6ab0f6;
+  color: #708597;
 }
 .el-header {
   padding-top: 20px;
   line-height: 110px;
   display: flex;
   justify-content: end;
-  border-bottom: 1px solid #e4e1e1;
+  border-bottom: 1px solid #dfe3e9;
 }
 </style>

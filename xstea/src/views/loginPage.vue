@@ -96,10 +96,8 @@ export default {
           </el-input>
         </el-form-item>
         <el-form-item>
-          <div class="password">
-            <el-checkbox>记住密码</el-checkbox>
-            <el-link type="primary" :underline="false">忘记密码</el-link>
-          </div>
+          <div>
+        </div>
         </el-form-item>
         <el-form-item>
           <el-button

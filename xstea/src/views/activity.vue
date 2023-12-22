@@ -22,7 +22,7 @@
       </el-form-item>
     </el-form>
 
-    <el-table :data="activityData" height="100%" style="width: 100%" @selection-change="selectId" row-key="id">
+    <el-table class="table" :data="activityData" height="100%" style="width: 100%" @selection-change="selectId" row-key="id">
       <el-table-column type="selection" :reserve-selection="true" width="55" />
       <el-table-column prop="userImg2" label="活动名称" width="180" />
       <el-table-column label="活动详情" width="180">
@@ -298,3 +298,6 @@ export default {
   },
 };
 </script>
+<style scoped>
+
+</style>
