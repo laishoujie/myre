@@ -2,13 +2,11 @@
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
 import axios from "axios";
-import { ElMessage } from 'element-plus'
-import { useStore } from "vuex";
+import { ElMessage,User } from 'element-plus'
 // import http from "@/network/http";
 export default {
   name: "login",
   setup() {
-    const store=useStore()
     const router = useRouter()
     const formModel = ref({
       username: "",
@@ -41,7 +39,7 @@ export default {
     console.log(res);
     if(res.data.code===200){
       ElMessage.success('登录成功')
-     window.localStorage["token"] = JSON.stringify(res.data.token);
+     window.sessionStorage["token"] = JSON.stringify(res.data.token);
      router.push('/')
     }else{
       ElMessage.success(res.data.msg)
@@ -65,7 +63,8 @@ export default {
 </script>
 
 <template>
-  <el-row>
+  <div class="all">
+    <el-row>
     <el-col :span="6" :offset="9">
       <!-- 登录 -->
       <el-form
@@ -81,7 +80,6 @@ export default {
         <el-form-item prop="username">
           <el-input
           v-model="formModel.username" 
-          :prefix-icon="User"
             placeholder="请输入用户名"
           >
           </el-input>
@@ -89,7 +87,6 @@ export default {
         <el-form-item prop="password">
           <el-input
            v-model="formModel.password"
-            :prefix-icon="Lock"
             type="password"
             placeholder="请输入密码"
           >
@@ -112,6 +109,8 @@ export default {
       </el-form>
     </el-col>
   </el-row>
+  <div></div>
+  </div>
 </template>
 <style scoped>
 .form {
@@ -124,9 +123,11 @@ export default {
 .button {
   width: 100%;
 }
-.password {
+
+.all{
+  background:url(../assets/login.jpg);
+  position: fixed;
+  height: 100%;
   width: 100%;
-  display: flex;
-  justify-content: space-between;
 }
 </style>

@@ -59,7 +59,11 @@
           <el-input v-model="formModel11.title" autocomplete="off" />
         </el-form-item>
         <el-form-item label="种类" :label-width="formLabelWidth">
-          <el-input v-model="formModel11.kind" autocomplete="off" placeholder="1精彩瞬间2科普活动"/>
+          <!-- <el-input v-model="formModel11.kind" autocomplete="off" placeholder="1精彩瞬间2科普活动"/> -->
+          <el-select v-model="formModel11.kind">
+          <el-option label="精彩瞬间" value="1"></el-option>
+          <el-option label="科普活动" value="2"></el-option>
+        </el-select>
         </el-form-item>
         <el-form-item label="图片" :label-width="formLabelWidth">
           <el-input v-model="formModel11.img" autocomplete="off"/>
@@ -91,7 +95,10 @@
           <el-input v-model="formModel1.title" autocomplete="off" />
         </el-form-item>
         <el-form-item label="种类" :label-width="formLabelWidth">
-          <el-input v-model="formModel1.kind" autocomplete="off" />
+          <el-select v-model="formModel1.kind">
+          <el-option label="精彩瞬间" value="1"></el-option>
+          <el-option label="科普活动" value="2"></el-option>
+        </el-select>
         </el-form-item>
         <el-form-item label="图片" :label-width="formLabelWidth">
           <el-input v-model="formModel1.img" autocomplete="off" />
@@ -131,12 +138,11 @@
 import pagecontainer from "@/components/pagecontainer.vue";
 import { onMounted, ref } from "vue";
 import axios from "axios";
-import http from "@/network/http";
 export default {
   name: "excellent",
   components: { pagecontainer },
   setup() {
-    let token=JSON.parse(localStorage.getItem('token'))
+    let token=JSON.parse(sessionStorage.getItem('token'))
     let excellentData=ref([
     ]);
     const form=ref({
@@ -217,6 +223,11 @@ export default {
     function turn(row) {
       dialogFormVisible.value = true;
       formModel1.value = row;
+      if(row.kind==1){
+        formModel1.value.kind="精彩瞬间"
+      }else{
+        formModel1.value.kind="科普活动"
+      }
     }
     function turnExcellent(){
       const reader = new FileReader();

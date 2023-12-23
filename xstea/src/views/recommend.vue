@@ -38,11 +38,12 @@
       </el-table-column>
     </el-table>
 
-    <el-dialog v-model="dialogVisible" title="正文">
-      <el-input
-        v-model="formModel4.status"
-        placeholder="0已推荐1有效推荐2已采纳"
-      />
+    <el-dialog v-model="dialogVisible" title="修改状态">
+      <el-select v-model="formModel4.status">
+          <el-option label="已推荐" value="0"></el-option>
+          <el-option label="有效推荐" value="1"></el-option>
+          <el-option label="已采纳" value="2"></el-option>
+        </el-select>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = !dialogVisible"

@@ -33,7 +33,7 @@
         </template>
       </el-table-column>
       <el-table-column label="报名人信息" width="180">
-        <el-button link type="primary" size="large">查看</el-button>
+        <el-button link type="primary" size="large" @click="dialogTableVisible=true">查看</el-button>
       </el-table-column>
       <el-table-column prop="type" label="精选" width="180">
         <template #default="{row}">
@@ -86,20 +86,27 @@
           <el-input v-model="formModel2.createTime" :disabled="disabled" autocomplete="off" />
         </el-form-item>
         <el-form-item label="审核状态">
-          <el-input v-model="formModel2.state" :disabled="disabled" autocomplete="off" />
+          <el-select v-model="formModel2.state" :disabled="disabled">
+          <el-option label="已审核" value="1"></el-option>
+          <el-option label="未审核" value="2"></el-option>
+        </el-select>
         </el-form-item>
         <el-form-item label="报名开始时间">
           <el-input v-model="formModel2.startTime" :disabled="disabled" autocomplete="off" />
         </el-form-item>
         <el-form-item label="报名二维码">
-          <el-input
-            v-model="formModel2.applicationFilePath"
-            autocomplete="off"
-            :disabled="disabled"
-          />
+          <el-image
+            style="width: 100px; height: 100px"
+            :src="formModel2.applicationFilePath"
+            fit="fill"
+          ></el-image>
         </el-form-item>
         <el-form-item label="签到二维码">
-          <el-input v-model="formModel2.signinFilePath" :disabled="disabled" autocomplete="off" />
+          <el-image
+            style="width: 100px; height: 100px"
+            :src="formModel2.signinFilePath"
+            fit="fill"
+          ></el-image>
         </el-form-item>
         <el-form-item label="举办时间">
           <el-input v-model="formModel2.lat" :disabled="disabled" autocomplete="off" />
@@ -117,7 +124,10 @@
           <el-input v-model="formModel2.qphone" :disabled="disabled" autocomplete="off" />
         </el-form-item>
         <el-form-item label="是否精选">
-          <el-input v-model="formModel2.type" :disabled="disabled" autocomplete="off" placeholder="1"/>
+          <el-select v-model="formModel2.type" :disabled="disabled">
+          <el-option label="是" value="1"></el-option>
+          <el-option label="否" value="2"></el-option>
+        </el-select>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -134,6 +144,17 @@
         </span>
       </template>
     </el-dialog>
+
+    <el-dialog v-model="dialogTableVisible" title="报名人信息">
+    <el-table :data="gridData">
+      <el-table-column prop="id" label="学号" width="150" />
+      <el-table-column property="name" label="姓名" width="140" />
+      <el-table-column property="rename" label="昵称" />
+      <el-table-column property="sex" label="性别" width="120" />
+      <el-table-column property="come" label="活动状态" width="150" />
+      <el-table-column property="collage" label="学院" />
+    </el-table>
+  </el-dialog>
   </pagecontainer>
 </template>
   <script>
@@ -143,7 +164,6 @@ import { onMounted, ref } from "vue";
 import axios from "axios";
 import qs from 'qs'
 import http from '@/network/http'
-import {store} from '@/stores/index'
 export default {
   name: "activity",
   components: { pagecontainer },
@@ -155,9 +175,36 @@ export default {
       type:'',
       state:''
     });
-    let token=JSON.parse(localStorage.getItem('token'))
+    let token=JSON.parse(sessionStorage.getItem('token'))
     let activityData = ref([]);
     let disabled=ref(true)
+    const dialogTableVisible=ref(false)
+    const gridData=ref([
+      {
+        id:'2022317220521',
+        name:'来守洁',
+        rename:'llai',
+        sex:'女',
+        come:'已签到',
+        collage:'信息学院'
+      },
+      {
+        id:'2022317220520',
+        name:'张玉雪',
+        rename:'Hhh',
+        sex:'女',
+        come:'未签到',
+        collage:'信息学院'
+      },
+      {
+        id:'2022317220522',
+        name:'艾雨晴',
+        rename:'lernasy',
+        sex:'男',
+        come:'已签到',
+        collage:'水产学院'
+      }
+    ])
     onMounted(() => {
       getActivity();
     });
@@ -225,15 +272,45 @@ export default {
       // console.log(localStorage.getItem('token')
     }
     function details1(row) {
+      disabled.value=true
       dialogFormVisible.value = true;
       formModel2.value = row;
-      console.log(formModel2.value);
+      if(row.type=='1'){
+        formModel2.value.type="是"
+      }else{
+        formModel2.value.type="否"
+      }
+      if(row.state=='1'){
+        formModel2.value.state="已审核"
+      }else{
+        formModel2.value.state="未审核"
+      }
+      if(row.isEnd==1){
+        formModel2.value.isEnd="已完结"
+      }else{
+        formModel2.value.isEnd="未完结"
+      }
       clear()
     }
     function details2(row) {
       disabled.value=false
       dialogFormVisible.value = true;
       formModel2.value = row;
+      if(row.type=='1'){
+        formModel2.value.type="是"
+      }else{
+        formModel2.value.type="否"
+      }
+      if(row.state=='1'){
+        formModel2.value.state="已审核"
+      }else{
+        formModel2.value.state="未审核"
+      }
+      if(row.isEnd==1){
+        formModel2.value.isEnd="已完结"
+      }else{
+        formModel2.value.isEnd="未完结"
+      }
     }
     function confirm(){
       axios({
@@ -292,7 +369,9 @@ export default {
       selectId,
       selectList,
       token,
-      serchActivity
+      serchActivity,
+      dialogTableVisible,
+      gridData
       // data
     };
   },

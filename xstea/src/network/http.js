@@ -1,9 +1,7 @@
 //封装axios
 import router from '@/router'
 import axios from 'axios'
-import { SET } from '@/stores/index.js'
 import { ElMessage } from 'element-plus'
-import { useStore } from "vuex";
 const http = axios.create({
   baseURL: "https://www.academictime.cn:3166",
   timeout: 5000
@@ -12,11 +10,8 @@ const http = axios.create({
 // 请求拦截器
 http.interceptors.request.use(
   config => {
-    // config.headers.Authorization="eyJhbGciOiJIUzUxMiJ9.eyJsb2dpbl91c2VyX2tleSI6IjcxMmY1YWVhLTE4YzktNGRlYy05MGU5LThmOTc5ZTg5MTQwNSJ9.Qj_NHXUQBC1pAqV8c2GLQkonDsdiZ3xSKxvRdiAD8Vo3PMYs4nFhwbek4Ane8jx4kmogh7Z2zPATE1EEeSINsw"
-    //请求头添加token
-    // const token = localStorage.getItem('token')
-    if (localStorage.getItem('token')) {
-      config.headers.Authorization =JSON.parse(localStorage.getItem('token'))
+    if (sessionStorage.getItem('token')) {
+      config.headers.Authorization =JSON.parse(sessionStorage.getItem('token'))
       console.log(config.headers.Authorization)
     }
     return config

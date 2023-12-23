@@ -43,7 +43,10 @@
       </el-table-column>
     </el-table>
     <el-dialog v-model="dialogVisible" title="修改公告状态">
-        <el-input v-model="formModel3.status" placeholder="0正常1关闭"/>
+      <el-select v-model="formModel3.status">
+          <el-option label="正常" value="0"></el-option>
+          <el-option label="关闭" value="1"></el-option>
+        </el-select>
       <template #footer>
         <span class="dialog-footer">
           <el-button @click="dialogVisible = !dialogVisible"
@@ -69,7 +72,7 @@ export default {
   name: "notice",
   components: { pagecontainer },
   setup() {
-    let token = JSON.parse(localStorage.getItem("token"));
+    let token = JSON.parse(sessionStorage.getItem("token"));
     const selectList = [];
     let dialogVisible = ref(false);
     let noticeData = ref([]);
@@ -139,6 +142,11 @@ export default {
     function turn(row){
       dialogVisible.value = true;
       formModel3.value = row;
+      if(row.status==0){
+        formModel3.value.status="正常"
+      }else{
+        formModel3.value.status="关闭"
+      }
     }
     function confirm(){
         axios({

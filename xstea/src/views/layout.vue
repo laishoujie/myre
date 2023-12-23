@@ -52,17 +52,13 @@
 <script>
 import { useRouter } from "vue-router";
 import { ElMessage } from "element-plus";
-import { useStore } from "vuex";
 import { onMounted,config } from "vue";
 export default {
   name: "layout",
   setup() {
     const router=useRouter()
-    const store =useStore()
     function back () {
-      store.commit('REMOVE')
       ElMessage.success("已退出登录")
-      window.localStorage["token"]=''
       window.sessionStorage["token"]=''
       router.push("/login");
     };
