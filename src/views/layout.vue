@@ -94,4 +94,7 @@ export default {
   justify-content: end;
   border-bottom: 1px solid #dfe3e9;
 }
+.el-main {
+    overflow:visible;
+  }
 </style>

@@ -25,9 +25,17 @@
       @selection-change="selectId"
       row-key="id"
     >
-      <el-table-column type="selection" width="55" :reserve-selection="true" />
+      <el-table-column type="selection" width="55" :reserve-selection="false" />
       <el-table-column prop="title" label="文章标题" width="180" />
-      <el-table-column prop="img" label="封面图片" width="180" />
+      <el-table-column prop="img" label="封面图片" width="180">
+        <template #default="{row}">
+          <el-image
+            style="width: 100px; height: 100px"
+            :src="row.img"
+            fit="fill"
+          ></el-image>
+        </template>
+      </el-table-column>
       <el-table-column prop="status" label="公告状态" width="180">
         <template #default="{ row }">
           <span v-if="row.status == 0">正常</span>
@@ -135,7 +143,6 @@ export default {
         })
         .catch(function (error) {
           // 处理错误情况
-          console.log(data1);
           console.log(error);
         });
     }

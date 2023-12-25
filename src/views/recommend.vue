@@ -122,7 +122,7 @@ export default {
     function serch(){
       if(id.value.length!=0){
         let rdata=recData1
-        recData.value=rdata.filter(data=>data.speakerName==id.value)
+        recData.value=rdata.filter(data=>data.speakerName.includes(id.value))
 
       }
     }

@@ -3,7 +3,7 @@ import router from '@/router'
 import axios from 'axios'
 import { ElMessage } from 'element-plus'
 const http = axios.create({
-  baseURL: "https://www.academictime.cn:3166",
+  baseURL: "http://117.50.163.249:3335",
   timeout: 5000
 })
 
