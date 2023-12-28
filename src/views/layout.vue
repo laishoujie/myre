@@ -73,11 +73,13 @@ export default {
 
 <style scoped>
 .el-aside{
-  background-color:#3e79b5;
+  /* background-color:#3e79b5; */
+  background: url(../assets/background.jpg);
 }
 .el-menu {
-  background-color: #3e79b5;
-  border-right: 1px solid #3e79b5;
+  /* background-color: #3e79b5; */
+  /* border-right: 1px solid #3e79b5; */
+  background: url(../assets/background.jpg);
   margin-right: 1px;
   display: flex;
   flex-direction: column;
@@ -92,6 +94,7 @@ export default {
   color: #053259;
 }
 .el-header {
+  background: url(../assets/background.jpg);
   padding-top: 20px;
   line-height: 110px;
   display: flex;
@@ -100,5 +103,6 @@ export default {
 }
 .el-main {
     overflow:visible;
+    background-color: #f9f9f9;
   }
 </style>

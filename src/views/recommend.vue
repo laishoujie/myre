@@ -4,8 +4,8 @@
       <el-button type="primary" size="middle" @click="deleteRecommend">删除选中</el-button>
     </template>
     <el-form inline>
-      <el-form-item label="主讲人姓名：">
-        <el-input placeholder="请输入主讲人姓名" v-model="serchKey"></el-input>
+      <el-form-item label="推荐人昵称：">
+        <el-input placeholder="请输入推荐人昵称" v-model="serchKey"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="serchRecommend">搜索</el-button>
@@ -23,7 +23,7 @@
     >
       <el-table-column type="selection" width="40" :reserve-selection="true" />
       <el-table-column prop="userId" label="学号" width="100" />
-      <el-table-column prop="nickName" label="昵称" width="100" />
+      <el-table-column prop="nickName" label="昵称"/>
       <el-table-column prop="avatar" label="头像" width="120">
         <template #default="{ row }">
           <el-image
@@ -34,7 +34,13 @@
         </template>
       </el-table-column>
       <el-table-column prop="createTime" label="推荐时间" width="100" />
-      <el-table-column prop="content" label="推荐理由" />
+      <el-table-column prop="content" label="推荐理由" width="80">
+        <template #default="{ row }">
+          <el-button link type="primary" size="large" @click="details(row)"
+            >查看</el-button
+          >
+        </template>
+        </el-table-column>
       <el-table-column prop="lecturerName" label="主讲人姓名" width="120" />
       <el-table-column prop="theme" label="主题" width="120" />
       <el-table-column prop="status" label="状态" width="100">
@@ -75,6 +81,9 @@
         </span>
       </template>
     </el-dialog>
+    <el-dialog v-model="dialogVisible1" title="正文">
+      <v-md-preview :text="formModel4.content"></v-md-preview>
+    </el-dialog>
   </pagecontainer>
 </template>
   
@@ -94,7 +103,9 @@ export default {
     const currentPage = ref(1);
     const pageSize = ref(10);
     const dialogVisible = ref(false);
+    const dialogVisible1 = ref(false);
     let recData = ref([]);
+    let rdata=ref([])
     let serchKey = ref("");
     const formModel4 = ref({});
     onMounted(() => {
@@ -104,6 +115,7 @@ export default {
       apiGetRecommend().then((res) => { 
         console.log(res)
         recData.value = res.rows;
+        rdata.value=res.rows;
         total.value = res.total;
         loading.value=false
       });
@@ -131,13 +143,24 @@ export default {
         getRecommend()
       });
       dialogVisible.value = false;
-    }    
+    }   
+    function details(row){
+      dialogVisible1.value = true;
+      formModel4.value = row;
+      const newContent = formModel4.value.content.replace(/<[^>]*>/g, "");
+      formModel4.value.content = newContent;
+      clear();
+    } 
     function serchRecommend() {
+      apiGetRecommend().then((res) => { 
+        console.log(res)
+        rdata.value=res.rows;
+        loading.value=false
+      });
       if (serchKey.value.length!=0) {
-        let rdata = recData.value;
         console.log(rdata)
-        recData.value = rdata.filter((data) =>
-         data.lecturerName.includes(serchKey.value)
+        recData.value = rdata.value.filter((data) =>
+         data.nickName.includes(serchKey.value)
         );
         total.value=recData.value.length
       }    
@@ -161,6 +184,7 @@ export default {
       })
     }
     return {
+      rdata,
       recData,
       formModel4,
       clear,
@@ -168,6 +192,7 @@ export default {
       confirm,
       serchKey,
       dialogVisible,
+      dialogVisible1,
       serchRecommend,
       getRecommend,
       onMounted,
@@ -178,7 +203,8 @@ export default {
       statusValue,
       deleteRecommend,
       selectId,
-      loading
+      loading,
+      details
     };
   },
 };
