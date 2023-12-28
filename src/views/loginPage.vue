@@ -1,3 +1,56 @@
+<template>
+  <div class="all">
+    <el-row>
+      <el-col :span="6" class="bg" :offset="6"/>
+    <el-col :span="6" class="col">
+      <!-- 登录 -->
+      <el-form
+        :model="formModel"
+        :rules="rules"
+        size="large"
+        aria-autocomplete="off"
+        class="form"
+      >
+        <el-form-item>
+          <h1>登录</h1>
+        </el-form-item>
+        <el-form-item prop="username">
+          <el-input
+          style="width: 350px;"
+          v-model="formModel.username" 
+            placeholder="请输入用户名"
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item prop="password">
+          <el-input
+          style="width: 350px;"
+           v-model="formModel.password"
+            type="password"
+            placeholder="请输入密码"
+          >
+          </el-input>
+        </el-form-item>
+        <el-form-item>
+          <div>
+        </div>
+        </el-form-item>
+        <el-form-item>
+          <el-button
+            @click="getLogin"
+            class="button"
+            type="primary"
+            auto-insert-space
+          >
+            登录
+          </el-button>
+        </el-form-item>
+      </el-form>
+    </el-col>
+  </el-row>
+  <div></div>
+  </div>
+</template>
 <script>
 import { onMounted, ref } from "vue";
 import { useRouter } from "vue-router";
@@ -23,7 +76,7 @@ export default {
       password: [
         {
           required: true,
-          message: "请输入用户名",
+          message: "请输入密码",
           trigger: "blur",
         },
       ],
@@ -62,72 +115,42 @@ export default {
 };
 </script>
 
-<template>
-  <div class="all">
-    <el-row>
-    <el-col :span="6" :offset="9">
-      <!-- 登录 -->
-      <el-form
-        :model="formModel"
-        :rules="rules"
-        size="large"
-        aria-autocomplete="off"
-        class="form"
-      >
-        <el-form-item>
-          <h1>登录</h1>
-        </el-form-item>
-        <el-form-item prop="username">
-          <el-input
-          v-model="formModel.username" 
-            placeholder="请输入用户名"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item prop="password">
-          <el-input
-           v-model="formModel.password"
-            type="password"
-            placeholder="请输入密码"
-          >
-          </el-input>
-        </el-form-item>
-        <el-form-item>
-          <div>
-        </div>
-        </el-form-item>
-        <el-form-item>
-          <el-button
-            @click="getLogin"
-            class="button"
-            type="primary"
-            auto-insert-space
-          >
-            登录
-          </el-button>
-        </el-form-item>
-      </el-form>
-    </el-col>
-  </el-row>
-  <div></div>
-  </div>
-</template>
 <style scoped>
+.col{
+  height: 500px;
+  width: 500px;
+}
 .form {
+  color: #696666;
+  height: 400px;
+  width: 350px;
   margin-top: 100px;
-  padding: 15px;
-  border: 1px solid #f5f5f5;
-  background-color: #f9f9f9;
-  border-radius: 15px;
+  padding: 30px;
+  border: 1px solid #dfdede;
+  border-left: 0;
+  background-color: #fdfcfc;
+  border-radius: 0 15px 15px 0 ; 
 }
 .button {
   width: 100%;
 }
 
 .all{
-  background:url(../assets/login.jpg);
+  background:url(../assets/background.jpg);
+  /* background-color: #7ba4c6; */
   position: fixed;
+  background-size: 100% 100%;
   height: 100%;
   width: 100%;
+}
+.bg{
+  height: 461px;
+  width: 550px;
+  border: 1px solid #dfdede;
+  border-right:0;
+  background:url(../assets/login.jpg);
+  background-size: 100% 100%;
+  margin-top: 100px;
+  border-radius:15px 0 0 15px; 
 }
 </style>

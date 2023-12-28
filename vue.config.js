@@ -17,7 +17,7 @@ module.exports = {
   devServer:{
     proxy: {
       '/api': {
-        target: 'https://www.academictime.cn:3166',
+        target: 'http://117.50.163.249:3335',
         ws:true,
         changeOrigin: true,
       }

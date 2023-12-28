@@ -22,32 +22,34 @@
       </el-form-item>
     </el-form>
 
-    <el-table class="table" :data="activityData" height="100%" style="width: 100%" @selection-change="selectId" row-key="id">
-      <el-table-column type="selection" :reserve-selection="false" width="55" />
-      <el-table-column prop="userImg2" label="活动名称" width="180" />
-      <el-table-column label="活动详情" width="180">
+    <el-table v-loading="loading" class="table" :data="activityData" height="100%" style="width: 100%" @selection-change="selectId" row-key="id">
+      <el-table-column type="selection" :reserve-selection="true" width="55" />
+      <el-table-column prop="userImg2" label="活动名称"/>
+      <el-table-column label="活动详情" width="140">
         <template #default="{ row }">
           <el-button link type="primary" size="large" @click="details1(row)"
             >查看</el-button
           >
         </template>
       </el-table-column>
-      <el-table-column label="报名人信息" width="180">
-        <el-button link type="primary" size="large" @click="dialogTableVisible=true">查看</el-button>
+      <el-table-column label="报名人信息" width="140">
+        <template #default="{ row }">
+         <el-button link type="primary" size="large" @click="signInfo(row)">查看</el-button>
+      </template>
       </el-table-column>
-      <el-table-column prop="type" label="精选" width="180">
+      <el-table-column prop="type" label="精选" width="120">
         <template #default="{row}">
             <span v-if="row.type==1">是</span>
             <span v-if="row.type==2">否</span>
           </template>
       </el-table-column>
-      <el-table-column prop="state" label="审核" width="180">
+      <el-table-column prop="state" label="审核" width="120">
         <template #default="{row}">
             <span v-if="row.state==1">已审核</span>
             <span v-if="row.state==2">未审核</span>
           </template>
       </el-table-column>
-      <el-table-column label="操作">
+      <el-table-column label="操作" width="160">
         <template #default="{ row }">
         <el-button type="primary" size="midlle" @click="details2(row)"
           >修改活动信息</el-button
@@ -60,17 +62,18 @@
       :total="total"
       :current-page="currentPage"
       :page-size="pageSize"
+      background
       layout="prev, pager, next"
       @current-change="handlePageChange"
     ></el-pagination>
-
     <el-dialog v-model="dialogDetFormVisible" title="活动详情">
       <el-form :model="formModel2">
         <el-form-item label="学术主题">
           <el-input v-model="formModel2.userImg2" :disabled="disabled" autocomplete="off" />
         </el-form-item>
         <el-form-item label="学术简介">
-          <el-input v-model="formModel2.details" :disabled="disabled" autocomplete="off" />
+          <el-input v-model="formModel2.details" :disabled="disabled" autocomplete="off" :autosize="{ minRows: 2, maxRows: 4 }"
+    type="textarea"/>
         </el-form-item>
         <el-form-item label="发起学院">
           <el-input v-model="formModel2.hbKeyword" :disabled="disabled" autocomplete="off" />
@@ -129,7 +132,8 @@
           <el-input v-model="formModel2.speakerName" :disabled="disabled" autocomplete="off" />
         </el-form-item>
         <el-form-item label="主讲人介绍">
-          <el-input v-model="formModel2.img" :disabled="disabled" autocomplete="off" />
+          <el-input v-model="formModel2.img" :disabled="disabled" autocomplete="off" :autosize="{ minRows: 2, maxRows: 4 }"
+    type="textarea"/>
         </el-form-item>
         <el-form-item label="发起人电话">
           <el-input v-model="formModel2.qphone" :disabled="disabled" autocomplete="off" />
@@ -155,14 +159,14 @@
         </span>
       </template>
     </el-dialog>
-
     <el-dialog v-model="dialogFormVisible" title="修改活动信息">
       <el-form :model="formModel2">
         <el-form-item label="学术主题">
           <el-input v-model="formModel2.userImg2" :disabled="disabled" autocomplete="off" />
         </el-form-item>
         <el-form-item label="学术简介">
-          <el-input v-model="formModel2.details" :disabled="disabled" autocomplete="off" />
+          <el-input v-model="formModel2.details" :disabled="disabled" autocomplete="off" :autosize="{ minRows: 2, maxRows: 4 }"
+    type="textarea"/>
         </el-form-item>
         <el-form-item label="发起学院">
           <el-input v-model="formModel2.hbKeyword" :disabled="disabled" autocomplete="off" />
@@ -198,6 +202,7 @@
           <el-upload
             class="avatar-uploader"
             action="http://117.50.163.249:3335/system/common/upload"
+            :headers="head"
             :show-file-list="false"
             :on-success="turnSussecc1"
           >
@@ -209,6 +214,7 @@
           <el-upload
             class="avatar-uploader"
             action="http://117.50.163.249:3335/system/common/upload"
+            :headers="head"
             :show-file-list="false"
             :on-success="turnSussecc2"
           >
@@ -229,7 +235,8 @@
           <el-input v-model="formModel2.speakerName" :disabled="disabled" autocomplete="off" />
         </el-form-item>
         <el-form-item label="主讲人介绍">
-          <el-input v-model="formModel2.img" :disabled="disabled" autocomplete="off" />
+          <el-input v-model="formModel2.img" :disabled="disabled" autocomplete="off" :autosize="{ minRows: 2, maxRows: 4 }"
+    type="textarea"/>
         </el-form-item>
         <el-form-item label="发起人电话">
           <el-input v-model="formModel2.qphone" :disabled="disabled" autocomplete="off" />
@@ -257,29 +264,41 @@
     </el-dialog>
     <el-dialog v-model="dialogTableVisible" title="报名人信息">
     <el-table :data="gridData">
-      <el-table-column prop="id" label="学号" width="150" />
-      <el-table-column property="name" label="姓名" width="140" />
-      <el-table-column property="rename" label="昵称" />
-      <el-table-column property="sex" label="性别" width="120" />
-      <el-table-column property="come" label="活动状态" width="150" />
-      <el-table-column property="collage" label="学院" />
+      <el-table-column prop="userName" label="学号" width="100" />
+      <el-table-column property="name" label="姓名" width="100" />
+      <el-table-column property="nickName" label="昵称" />
+      <el-table-column property="sex" label="性别" width="100">
+        <template #default="{row}">
+            <span v-if="row.sex==1">女</span>
+            <span v-if="row.sex==2">男</span>
+          </template>
+      </el-table-column>
+      <el-table-column property="status" label="活动状态" width="120">
+        <template #default="{row}">
+            <span v-if="row.status==1">未签到</span>
+            <span v-if="row.status==2">已签到</span>
+            <span v-if="row.status==3">失约</span>
+          </template>
+        </el-table-column>
+      <el-table-column property="faculty" label="学院" />
     </el-table>
   </el-dialog>
-
   </pagecontainer>
 </template>
   <script>
 import pagecontainer from "@/components/pagecontainer";
 import { useRoute } from "vue-router";
 import { onMounted, ref } from "vue";
-import axios from "axios";
-import qs from 'qs'
-import http from '@/network/http'
+import axios from "axios"
 export default {
   name: "activity",
   components: { pagecontainer },
   setup() {
-    // const clear = ref(false)
+    const loading=ref(true)
+    const total=ref(0)
+    const max=ref(0)
+    const currentPage=ref(1)
+    const pageSize=ref(8)
     const selectList=[]
     const route = useRoute();
     let form = ref({
@@ -287,56 +306,60 @@ export default {
       state:''
     });
     let token=JSON.parse(sessionStorage.getItem('token'))
+    let head=ref({Authorization:token})
     let activityData = ref([]);
     let disabled=ref(true)
     const dialogTableVisible=ref(false)
-    const gridData=ref([
-      {
-        id:'2022317220521',
-        name:'来守洁',
-        rename:'llai',
-        sex:'女',
-        come:'已签到',
-        collage:'信息学院'
-      },
-      {
-        id:'2022317220520',
-        name:'张玉雪',
-        rename:'Hhh',
-        sex:'女',
-        come:'未签到',
-        collage:'信息学院'
-      },
-      {
-        id:'2022317220522',
-        name:'艾雨晴',
-        rename:'lernasy',
-        sex:'男',
-        come:'已签到',
-        collage:'水产学院'
-      }
-    ])
+    const gridData=ref([])
     onMounted(() => {
-      getActivity();
+      getActivity(currentPage.value);
       clear()
     });
-    function getActivity() {
+    function getActivity(pageNum) {
       axios
-        .post("http://117.50.163.249:3335/system/activity/list", {})
+        .post("http://117.50.163.249:3335/system/activity/list", {
+          "pageSize":pageSize.value,
+          "pageNum":pageNum
+        })
         .then(function (res) {
           activityData.value = res.data.rows;
-          console.log(activityData.value)
+          total.value = res.data.total;
+          max.value=res.data.total
+          loading.value=false
         })
         .catch(function (error) {
           // 处理错误情况
           console.log(error);
         });
     }
-    function serchActivity() {
+    function handlePageChange(pageNum){
+      currentPage.value=pageNum
+      if(total.value==max.value){
+        getActivity(pageNum)
+      }else{
+        serchActivity(pageNum)
+      }
+      
+    }
+    function serchActivity(pageNum) {
+      let type=ref('')
+      let state=ref('')
+      if(form.value.type){
+        type.value=JSON.parse(form.value.type)
+      }else{
+        type.value=""
+      }
+      if(form.value.state){
+        state.value=JSON.parse(form.value.state)
+      }else{
+        state.value=""
+      }
       axios
         .post("http://117.50.163.249:3335/system/activity/list", {
-          "type":JSON.parse(form.value.type),
-            "state":JSON.parse(form.value.state),
+          "type":type.value,
+            "state":state.value,
+            "pageSize":pageSize.value,
+            "pageNum":pageNum,
           headers:{
            Authorization:token
          },
@@ -344,6 +367,7 @@ export default {
         .then(function (res) {
           console.log(res)
           activityData.value = res.data.rows;
+          total.value = res.data.total;
         })
         .catch(function (error) {
           // 处理错误情况
@@ -384,8 +408,7 @@ export default {
       console.log(form.value.type)
       form.value.type = "";
       form.value.state = "";
-      getActivity()
-      // console.log(localStorage.getItem('token')
+      getActivity(currentPage.value);
     }
     function details1(row) {
       disabled.value=true
@@ -465,7 +488,7 @@ export default {
          },
       }).then(res=>{
         console.log(res)
-        getActivity()
+        getActivity(currentPage.value)
         dialogFormVisible.value = !dialogFormVisible
       })
     }
@@ -488,7 +511,7 @@ export default {
         .then(function (res) {
           console.log(data1)
           console.log(res)
-          getActivity()
+          getActivity(currentPage.value)
         })
         .catch(function (error) {
           // 处理错误情况
@@ -497,10 +520,27 @@ export default {
         });
     }
     const turnSussecc1=(response, uploadFile)=>{
-      imageUrl1.value = URL.createObjectURL(uploadFile.raw);
+      imageUrl1.value = response.msg;
     }
     const turnSussecc2=(response, uploadFile)=>{
-      imageUrl2.value = URL.createObjectURL(uploadFile.raw);
+      imageUrl2.value = response.msg
+    }
+    function signInfo(row){
+      dialogTableVisible.value=true
+      axios
+        .get("http://117.50.163.249:3335/system/activity"+'/'+row.id, {
+          headers:{
+            Authorization:token
+          }
+        })
+        .then(function (res) {
+          console.log(res)
+          gridData.value=res.data.data.tblUserActivities
+        })
+        .catch(function (error) {
+          // 处理错误情况
+          console.log(error);
+        });
     }
     return {
       activityData,
@@ -526,7 +566,15 @@ export default {
       turnSussecc2,
       imageUrl1,
       imageUrl2,
-      dialogDetFormVisible
+      dialogDetFormVisible,
+      head,
+      total,
+      currentPage,
+      pageSize,
+      handlePageChange,
+      max,
+      signInfo,
+      loading
       // data
     };
   },

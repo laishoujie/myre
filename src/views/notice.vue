@@ -13,19 +13,20 @@
         </el-select>
       </el-form-item>
       <el-form-item>
-        <el-button type="primary" @click="serchNotice">搜索</el-button>
+        <el-button type="primary" @click="serchNotice(currentPage)">搜索</el-button>
         <el-button @click="clear">重置</el-button>
       </el-form-item>
     </el-form>
 
     <el-table
+    v-loading="loading"
       :data="noticeData"
       height="100%"
       style="width: 100%"
       @selection-change="selectId"
       row-key="id"
     >
-      <el-table-column type="selection" width="55" :reserve-selection="false" />
+      <el-table-column type="selection" width="55" :reserve-selection="true" />
       <el-table-column prop="title" label="文章标题" width="180" />
       <el-table-column prop="img" label="封面图片" width="180">
         <template #default="{row}">
@@ -50,8 +51,16 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      :total="total"
+      :current-page="currentPage"
+      :page-size="pageSize"
+      background
+      layout="prev, pager, next"
+      @current-change="handlePageChange"
+    ></el-pagination>
     <el-dialog v-model="dialogVisible" title="修改公告状态">
-      <el-select v-model="formModel3.status">
+      <el-select v-model="statusValue">
           <el-option label="正常" value="0"></el-option>
           <el-option label="关闭" value="1"></el-option>
         </el-select>
@@ -76,10 +85,17 @@
 import pagecontainer from "@/components/pagecontainer.vue";
 import { ref, onMounted } from "vue";
 import axios from "axios";
+
 export default {
   name: "notice",
   components: { pagecontainer },
   setup() {
+    const loading=ref(true)
+    const statusValue=ref('')
+    const total=ref(0)
+    const max=ref(0)
+    const currentPage=ref(1)
+    const pageSize=ref(8)
     let token = JSON.parse(sessionStorage.getItem("token"));
     const selectList = [];
     let dialogVisible = ref(false);
@@ -94,33 +110,47 @@ export default {
     });
     function clear() {
       form.value.status = "";
-      getNotice();
+      getNotice(currentPage.value);
     }
     onMounted(() => {
-      getNotice();
+      getNotice(currentPage.value);
     });
-    function getNotice() {
+    function getNotice(pageNum) {
       axios
-        .get("http://117.50.163.249:3335/system/notice/list", {})
+        .get("http://117.50.163.249:3335/system/notice/list", {
+          params:{
+            pageSize:pageSize.value,
+            pageNum:pageNum,
+          }
+        })
         .then(function (res) {
           noticeData.value = res.data.rows;
-          console.log(noticeData.value);
+          total.value = res.data.total;
+          max.value=res.data.total;
+          loading.value=false
         })
         .catch(function (error) {
           // 处理错误情况
           console.log(error);
         });
     }
-    function serchNotice() {
-      let ndata = noticeData.value;
-      if (form.value.status == "") {
-        noticeData.value = ndata;
-      } else {
-        noticeData.value = ndata.filter(
-          (data) => data.status == form.value.status
-        );
-        console.log(noticeData.value);
-      }
+    function serchNotice(pageNum) {
+      axios
+        .get("http://117.50.163.249:3335/system/notice/list", {
+          params:{
+            pageSize:pageSize.value,
+            pageNum:pageNum,
+            status:form.value.status
+          }
+        })
+        .then(function (res) {
+          noticeData.value = res.data.rows;
+          total.value = res.data.total;
+        })
+        .catch(function (error) {
+          // 处理错误情况
+          console.log(error);
+        });
     }
     function selectId(sele) {
       selectList.value = [];
@@ -139,7 +169,7 @@ export default {
           },
         })
         .then(function (res) {
-          getNotice();
+          getNotice(currentPage.value);
         })
         .catch(function (error) {
           // 处理错误情况
@@ -148,11 +178,11 @@ export default {
     }
     function turn(row){
       dialogVisible.value = true;
-      formModel3.value = row;
+      formModel3.value=row
       if(row.status==0){
-        formModel3.value.status="正常"
+        statusValue.value="正常"
       }else{
-        formModel3.value.status="关闭"
+        statusValue.value="关闭"
       }
     }
     function confirm(){
@@ -161,16 +191,25 @@ export default {
         data:{
         specialId:JSON.parse(formModel3.value.specialId),
         noticeId:JSON.parse(formModel3.value.noticeId),
-        status:JSON.parse(formModel3.value.status)
+        status:JSON.parse(statusValue.value)
       },
         url:'http://117.50.163.249:3335/system/notice',
         headers:{
            Authorization:token
          },
       }).then(res=>{
-        getNotice()
+        getNotice(currentPage.value)
         dialogVisible.value = !dialogVisible
       })
+    }
+    function handlePageChange(pageNum){
+      currentPage.value=pageNum
+      if(total.value==max.value){
+        getNotice(pageNum)
+      }else{
+        serchNotice(pageNum)
+      }
+      
     }
     return {
       formModel3,
@@ -186,7 +225,13 @@ export default {
       confirm,
       turn,
       dialogVisible,
-      token
+      token,
+      total,
+      currentPage,
+      pageSize,
+      handlePageChange,
+      statusValue,
+      loading
     };
   },
 };

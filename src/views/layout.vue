@@ -1,11 +1,13 @@
 <template>
   <div class="common-layout">
-    <el-container class="container">
+    <el-container>
       <el-aside width="200px">
         <h2 class="mb-2">&nbsp;学术晚茶</h2>
         <el-menu
-        active-text-color="#79bbff"
+          active-text-color="#79bbff"
+          background-color="#d9ecff"
           class="el-menu-vertical-demo"
+          text-color="#fff"
           :default-active="$route.path"
           router
         >
@@ -43,14 +45,14 @@
           </el-dropdown>
         </el-header>
         <el-main>
-          <router-view></router-view>
+            <router-view></router-view>
         </el-main>
       </el-container>
     </el-container>
   </div>
 </template>
 <script>
-import { useRouter } from "vue-router";
+import { useRouter,useRoute } from "vue-router";
 import { ElMessage } from "element-plus";
 import { onMounted,config } from "vue";
 export default {
@@ -68,24 +70,26 @@ export default {
   },
 };
 </script>
+
 <style scoped>
-.container {
-  height: 100vh;
+.el-aside{
+  background-color:#3e79b5;
 }
 .el-menu {
-  background-color: #fbfbfb;
-  height: 70vh;
-  border-top: 1px solid #dfe3e9;
+  background-color: #3e79b5;
+  border-right: 1px solid #3e79b5;
+  margin-right: 1px;
   display: flex;
   flex-direction: column;
   justify-content: center;
 }
 .el-menu-item {
   flex: 1;
-  /* text-align: center; */
+  margin-top: 30px;
+  border-radius: 15px;
 }
 .mb-2 {
-  color: #708597;
+  color: #053259;
 }
 .el-header {
   padding-top: 20px;

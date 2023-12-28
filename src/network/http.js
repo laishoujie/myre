@@ -12,7 +12,6 @@ http.interceptors.request.use(
   config => {
     if (sessionStorage.getItem('token')) {
       config.headers.Authorization =JSON.parse(sessionStorage.getItem('token'))
-      console.log(config.headers.Authorization)
     }
     return config
   },

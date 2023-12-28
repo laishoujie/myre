@@ -20,15 +20,19 @@
         <el-button @click="clear">重置</el-button>
       </el-form-item>
     </el-form>
+<el-table v-if="loading" v-loading="loading">
+....
+</el-table>
 
     <el-table
-      :data="excellentData"
+    v-lese
+      :data="excellentData.slice((currentPage-1)*pageSize,currentPage*pageSize)"
       height="100%"
       @selection-change="selectId"
       row-key="id"
       style="width: 100%"
     >
-      <el-table-column type="selection" width="55" :reserve-selection="false" />
+      <el-table-column type="selection" width="55" :reserve-selection="true" />
       <el-table-column prop="title" label="标题" width="140" />
       <el-table-column prop="kind" label="种类" width="120">
         <template #default="{ row }">
@@ -65,6 +69,14 @@
         </template>
       </el-table-column>
     </el-table>
+    <el-pagination
+      :total="total"
+      :current-page="currentPage"
+      :page-size="pageSize"
+      background
+      layout="prev, pager, next"
+      @current-change="handlePageChange"
+    ></el-pagination>
     <el-dialog v-model="dialogFormVisible1" title="新增文章">
       <el-form :model="formModel11">
         <el-form-item label="标题" :label-width="formLabelWidth">
@@ -80,6 +92,7 @@
           <el-upload
             class="avatar-uploader"
             action="http://117.50.163.249:3335/system/common/upload"
+            :headers="head"
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
           >
@@ -118,8 +131,8 @@
           <el-upload
             class="avatar-uploader"
             action="http://117.50.163.249:3335/system/common/upload"
+            :headers="head"
             :show-file-list="false"
-            :auto-upload="false"
             :on-success="turnSussecc"
           >
           <img v-if="imageUrl" :src="imageUrl" class="avatar" />
@@ -154,11 +167,16 @@ export default {
   name: "excellent",
   components: { pagecontainer },
   setup() {
+    const loading=ref(true)
+    const total=ref(0)
+    const currentPage=ref(1)
+    const pageSize=ref(2)
     let token = JSON.parse(sessionStorage.getItem("token"));
     let excellentData = ref([]);
     const form = ref({
       title: "",
     });
+    let head=ref({Authorization:token})
     const dialogFormVisible = ref(false);
     const dialogFormVisible1 = ref(false);
     const dialogVisible = ref(false);
@@ -182,14 +200,17 @@ export default {
     }
     onMounted(() => {
       getExcellent();
+      // serchExcellent(currentPage.value)
       clear();
     });
     function getExcellent() {
       axios
-        .get("http://117.50.163.249:3335/system/column/list", {})
+        .get("http://117.50.163.249:3335/system/column/list", {
+        })
         .then(function (res) {
           excellentData.value = res.data.rows;
-          
+          total.value = res.data.total;
+          loading.value=false
         })
         .catch(function (error) {
           // 处理错误情况
@@ -334,15 +355,15 @@ export default {
          
     }
     function serchExcellent() {
-      let edata = excellentData.value;
-      if (serchKey.value.length == 0) {
-        excellentData.value = edata;
-      } else {
-        excellentData.value = edata.filter(
-          (data) => data.title.includes(serchKey.value) 
+      if (serchKey.value.length != 0) {
+        let edata = excellentData.value;
+        console.log(edata)
+        excellentData.value = edata.filter((data) =>
+          data.title.includes(serchKey.value)
         );
-        console.log(excellentData.value);
+        total.value=excellentData.value.length
       }
+
     }
     function addNotice(row) {
       let specialId = row.id;
@@ -382,12 +403,13 @@ export default {
     const imageUrl = ref("");
 
     const handleAvatarSuccess = (response, uploadFile) => {
-      imageUrl.value = URL.createObjectURL(uploadFile.raw);
-      console.log(response)
-     
+       imageUrl.value = response.msg;   
     };
     const turnSussecc=(response, uploadFile)=>{
-      imageUrl.value = URL.createObjectURL(uploadFile.raw); 
+      imageUrl.value = response.msg; 
+    }
+    function handlePageChange(pageNum){
+      currentPage.value=pageNum
     }
     return {
       excellentData,
@@ -414,6 +436,13 @@ export default {
       handleAvatarSuccess,
       imageUrl,
       turnSussecc,
+      token,
+      head,
+      total,
+      currentPage,
+      pageSize,
+      handlePageChange,
+      loading
     };
   },
 };

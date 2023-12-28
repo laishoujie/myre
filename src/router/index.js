@@ -19,11 +19,11 @@ const router = createRouter({
       children:[
         {
           path:'/activity',
-          component:activity
+          component:activity,
         },
         {
           path:'/recommend',
-          component:recommend
+          component:recommend,
         },
         {
           path:'/notice',
