@@ -4,8 +4,8 @@
       <el-button type="primary" size="middle" @click="deleteRecommend">删除选中</el-button>
     </template>
     <el-form inline>
-      <el-form-item label="推荐人昵称：">
-        <el-input placeholder="请输入推荐人昵称" v-model="serchKey"></el-input>
+      <el-form-item label="主讲人姓名：">
+        <el-input placeholder="请输入主讲人姓名" v-model="serchKey"></el-input>
       </el-form-item>
       <el-form-item>
         <el-button type="primary" @click="serchRecommend">搜索</el-button>
@@ -101,7 +101,7 @@ export default {
     const statusValue=ref('')
     const total = ref(0);
     const currentPage = ref(1);
-    const pageSize = ref(10);
+    const pageSize = ref(8);
     const dialogVisible = ref(false);
     const dialogVisible1 = ref(false);
     let recData = ref([]);
@@ -152,15 +152,13 @@ export default {
       clear();
     } 
     function serchRecommend() {
-      apiGetRecommend().then((res) => { 
-        console.log(res)
-        rdata.value=res.rows;
-        loading.value=false
-      });
-      if (serchKey.value.length!=0) {
-        console.log(rdata)
+      rdata.value=recData.value
+      if (serchKey.value.length!=0) {     
+        rdata.value = rdata.value.filter((data) =>
+          data.lecturerName!=null
+        );
         recData.value = rdata.value.filter((data) =>
-         data.nickName.includes(serchKey.value)
+          data.lecturerName.includes(serchKey.value)
         );
         total.value=recData.value.length
       }    

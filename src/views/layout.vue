@@ -91,7 +91,7 @@ export default {
   border-radius: 15px;
 }
 .mb-2 {
-  color: #053259;
+  color: #5c84a6;
 }
 .el-header {
   background: url(../assets/background.jpg);

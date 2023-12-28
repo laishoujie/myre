@@ -96,12 +96,12 @@
             :show-file-list="false"
             :on-success="handleAvatarSuccess"
           >
-            <img v-if="imageUrl" :src="imageUrl" class="avatar" />
+            <img v-if="imageUrl1" :src="imageUrl1" class="avatar" />
             <el-icon v-else class="avatar-uploader-icon"><Plus /></el-icon>
           </el-upload>
         </el-form-item>
         <el-form-item label="正文" :label-width="formLabelWidth">
-          <v-md-editor v-model="formModel1.content" height="400px"></v-md-editor>
+          <v-md-editor v-model="formModel11.content" height="400px"></v-md-editor>
         </el-form-item>
       </el-form>
       <template #footer>
@@ -153,7 +153,7 @@
       </template>
     </el-dialog>
     <el-dialog v-model="dialogVisible" title="正文">
-      <v-md-preview :text="formModel1.content"></v-md-preview>
+      <v-md-preview :text="content"></v-md-preview>
     </el-dialog>
   </pagecontainer>
 </template>
@@ -167,10 +167,11 @@ export default {
   name: "excellent",
   components: { pagecontainer },
   setup() {
+    const content=ref('')
     const loading=ref(true)
     const total=ref(0)
     const currentPage=ref(1)
-    const pageSize=ref(2)
+    const pageSize=ref(8)
     let token = JSON.parse(sessionStorage.getItem("token"));
     let excellentData = ref([]);
     const form = ref({
@@ -219,10 +220,9 @@ export default {
     }
     function details1(row) {
       dialogVisible.value = true;
-      formModel1.value = row;
-      const newContent = formModel1.value.content.replace(/<[^>]*>/g, "");
-      formModel1.value.content = newContent;
-      clear();
+      content.value=row.content
+      const newContent = content.value.replace(/<[^>]*>/g, "");
+      content.value = newContent;
     }
     function addExcellent() {
       const reader = new FileReader();
@@ -238,7 +238,7 @@ export default {
               "data:application/octet-stream;base64,",
               ""
             ),
-            img: imageUrl.value,
+            img: imageUrl1.value,
           },
           url: "http://117.50.163.249:3335/system/column",
           headers: {
@@ -252,7 +252,7 @@ export default {
             content: "",
             img: "",
           };
-          imageUrl.value=''
+          imageUrl1.value=''
           getExcellent();
         });
       };
@@ -260,6 +260,7 @@ export default {
     function turn(row) {
       dialogFormVisible.value = true;
       formModel1.value = row;
+      formModel1.value.content=row.content.replace(/<[^>]*>/g, "");
       console.log(row)
       if (row.kind == 1) {
         formModel1.value.kind = "精彩瞬间";
@@ -299,6 +300,7 @@ export default {
         }).then((res) => {
           console.log(res);
           dialogFormVisible.value = !dialogFormVisible;
+          formModel11.value=[]
           getExcellent()
         });
       };
@@ -401,9 +403,9 @@ export default {
         });
     }
     const imageUrl = ref("");
-
+    const imageUrl1=ref("")
     const handleAvatarSuccess = (response, uploadFile) => {
-       imageUrl.value = response.msg;   
+       imageUrl1.value = response.msg;   
     };
     const turnSussecc=(response, uploadFile)=>{
       imageUrl.value = response.msg; 
@@ -442,7 +444,9 @@ export default {
       currentPage,
       pageSize,
       handlePageChange,
-      loading
+      loading,
+      content,
+      imageUrl1
     };
   },
 };

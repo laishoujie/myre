@@ -313,7 +313,6 @@ export default {
     const gridData=ref([])
     onMounted(() => {
       getActivity(currentPage.value);
-      clear()
     });
     function getActivity(pageNum) {
       axios
