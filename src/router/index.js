@@ -5,6 +5,7 @@ import layout from '@/views/layout'
 import recommend from '@/views/recommend'
 import notice from '@/views/notice'
 import excellent from '@/views/excellent'
+import { ElMessage } from 'element-plus'
 const router = createRouter({
   history: createWebHistory(),
   routes: [
@@ -40,7 +41,7 @@ const router = createRouter({
 router.beforeEach((to) => {
   // 如果没有token，且访问的是非登录页，拦截到登录，其他情况正常放行
   const token=sessionStorage.getItem('token')
-  if (!token && to.path !== '/login') return '/login'
+  if (!token && to.path !== '/login')  return '/login'
   return true
 })
 export default router
